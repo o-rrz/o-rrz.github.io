@@ -1,30 +1,74 @@
+const MS = (() => {
+
 const base = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-const sym = "!@#$%^&*()_+-=[]{}|;:,.<>?/";
+const sym  = "!@#$%^&*()_+-=[]{}|;:,.<>?/";
+let last = "";
 
-const lenInput = document.getElementById("len");
-const lenVal = document.getElementById("lenVal");
-const output = document.getElementById("output");
-const strength = document.getElementById("strength");
+const derivePassword = async (len, useSymbol) => {
+  const seed = crypto.getRandomValues(new Uint8Array(32));
+  const salt = crypto.getRandomValues(new Uint8Array(16));
 
-lenInput.oninput = () => {
-  lenVal.textContent = lenInput.value;
+  const key = await crypto.subtle.importKey(
+    "raw", seed, { name: "PBKDF2" }, false, ["deriveBits"]
+  );
+
+  const bits = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt,
+      iterations: 120000,
+      hash: "SHA-256"
+    },
+    key,
+    768
+  );
+
+  const pool = useSymbol ? base + sym : base;
+  let out = "";
+
+  new Uint8Array(bits).forEach(b => {
+    let c = pool[b % pool.length];
+    let code = c.charCodeAt(0);
+    code = 33 + ((code - 33 + 11) % 94);
+    out += String.fromCharCode(code);
+  });
+
+  return out.slice(0, len);
 };
 
-document.getElementById("generate").onclick = () => {
-  const len = +lenInput.value;
-  const pool = document.getElementById("useSymbol").checked
-    ? base + sym
-    : base;
+const wanYears = n =>
+  Math.floor(n / 10000).toLocaleString("zh-Hant");
 
-  const bytes = crypto.getRandomValues(new Uint8Array(len));
-  let pwd = "";
-  bytes.forEach(b => pwd += pool[b % pool.length]);
-
-  output.textContent = pwd;
-  strength.textContent = `長度 ${len}，字元空間 ${pool.length}`;
+const calcStrength = (len, pool) => {
+  const years = Math.pow(pool, len) / 1e10 / 31536000;
+  if (years < 1e3) return ["極弱", "#fa5252", years];
+  if (years < 1e6) return ["弱", "#fd7e14", years];
+  if (years < 1e9) return ["中", "#fab005", years];
+  if (years < 1e12) return ["強", "#40c057", years];
+  return ["頂級", "#4dabf7", years];
 };
 
-document.getElementById("copy").onclick = () => {
-  if (output.textContent)
-    navigator.clipboard.writeText(output.textContent);
+return {
+  generate: async () => {
+    const len = +document.getElementById("ms_len").value;
+    const symb = document.getElementById("ms_symbol").checked;
+
+    last = await derivePassword(len, symb);
+    document.getElementById("ms_out").textContent = last;
+
+    const s = calcStrength(len, symb ? 94 : 62);
+    document.getElementById("ms_strength").innerHTML =
+      `<span style="color:${s[1]}">
+        破解密碼需（${wanYears(s[2])}）萬年
+      </span>`;
+  },
+
+  copy: () => {
+    if (last) navigator.clipboard.writeText(last);
+  }
 };
+
+})();
+
+document.getElementById("ms_len").oninput = e =>
+  document.getElementById("ms_len_val").textContent = e.target.value;
