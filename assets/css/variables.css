@@ -1,2 +1,8 @@
-assets/css/
-├─ variables.css
+:root {
+  --bg-main: #000;
+  --bg-card: #111;
+  --text-main: #fff;
+  --text-sub: #aaa;
+  --accent: #00eaff;
+  --radius: 14px;
+}
