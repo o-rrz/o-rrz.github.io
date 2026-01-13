@@ -3,49 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Secure Password Generator</title>
+  <title>密碼產生器 · 莫比空間</title>
 
-  <!-- 共用樣式 -->
-  <link rel="stylesheet" href="../assets/css/framework.css">
+  <!-- CSS 路徑改成根目錄 -->
+  <link rel="stylesheet" href="/assets/css/framework.css">
+
+  <style>
+    /* 密碼產生器專用簡單樣式 */
+    body {
+      font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
+      background: #0f1115;
+      color: #e9ecef;
+      margin: 0;
+      padding: 0;
+    }
+    #mobispace-secure-tool {
+      max-width: 460px;
+      margin: 40px auto;
+      padding: 34px;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.45);
+      background: #0f1115;
+    }
+    input[type="range"] {
+      width: 100%;
+      margin-top: 6px;
+    }
+    button {
+      cursor: pointer;
+    }
+    #ms_out {
+      word-break: break-all;
+    }
+  </style>
 </head>
-
 <body>
 
 <div id="mobispace-secure-tool">
+  <div style="text-align:center;margin-bottom:14px;">
+    <p style="text-align:center;font-size:.85rem;color:#9aa0a6;margin-bottom:30px;">
+      Secure Password Generator · Mobispace
+    </p>
 
-  <p class="ms-subtitle">
-    Secure Password Generator · Mobispace
-  </p>
-
-  <label>
-    密碼長度：
-    <strong><span id="ms_len_val">24</span></strong>
-  </label>
-  <input id="ms_len" type="range" min="6" max="99" value="24">
-
-  <div class="ms-option">
-    <label>
-      <input type="checkbox" id="ms_symbol" checked>
-      包含特殊符號
+    <label style="color:#dee2e6;">
+      密碼長度：
+      <strong><span id="ms_len_val">24</span></strong>
     </label>
+    <input id="ms_len" type="range" min="6" max="99" value="24" />
+
+    <div style="margin:16px 0;color:#ced4da;">
+      <label>
+        <input type="checkbox" id="ms_symbol" checked />
+        包含特殊符號
+      </label>
+    </div>
+
+    <button onclick="MS.generate()"
+      style="width:100%;padding:13px;border:0;border-radius:10px;background:#1971c2;color:#fff;font-size:1rem;">
+      產生安全密碼
+    </button>
+
+    <div style="display:flex;gap:8px;margin-top:18px;">
+      <div id="ms_out"
+        style="flex:1;padding:12px;background:#161a20;border-radius:10px;font-weight:bold;color:#e9ecef;">
+      </div>
+      <button onclick="MS.copy()"
+        style="padding:0 16px;border:0;border-radius:10px;background:#2f9e44;color:#fff;">
+        複製
+      </button>
+    </div>
+
+    <div id="ms_strength" style="margin-top:14px;font-weight:bold;font-size:.95rem;">⚠️</div>
   </div>
-
-  <button onclick="MS.generate()">產生安全密碼</button>
-
-  <div class="ms-output">
-    <div id="ms_out"></div>
-    <button onclick="MS.copy()">複製</button>
-  </div>
-
-  <div id="ms_strength">⚠️</div>
-
 </div>
 
-<!-- 共用 JS（如果有） -->
-<script src="../assets/js/framework.js"></script>
-
-<!-- 密碼產生器 -->
-<script src="../assets/js/password.js"></script>
-
+<!-- JS 路徑改成根目錄 -->
+<script src="/assets/js/password.js"></script>
 </body>
 </html>
