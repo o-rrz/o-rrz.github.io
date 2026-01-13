@@ -1,6 +1,106 @@
+:root {
+  --bg: #0f1115;
+  --card: #161a20;
+  --border: #242833;
+  --text: #e9ecef;
+  --muted: #9aa0a6;
+  --primary: #4dabf7;
+  --success: #40c057;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+}
+
 body {
   margin: 0;
-  background: #0f1115;
-  color: #e9ecef;
-  font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Header */
+.app-header {
+  max-width: 960px;
+  margin: 40px auto 20px;
+  padding: 0 16px;
+}
+
+.sub {
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+/* Tool list (index) */
+.tool-list {
+  max-width: 960px;
+  margin: auto;
+  padding: 0 16px;
+}
+
+.tool-card {
+  display: block;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+  text-decoration: none;
+  color: var(--text);
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+}
+
+/* Tool layout */
+.tool-layout {
+  max-width: 960px;
+  margin: auto;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.tool-panel,
+.tool-result {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 22px;
+}
+
+/* Controls */
+label {
+  display: block;
+  margin: 12px 0 6px;
+  color: var(--muted);
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.checkbox {
+  margin: 16px 0;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Output */
+.output-box {
+  background: #0c0f14;
+  padding: 14px;
+  border-radius: 10px;
+  min-height: 60px;
+  word-break: break-all;
+  font-weight: 600;
+}
+
+.strength {
+  margin: 12px 0;
+  font-size: .9rem;
 }
