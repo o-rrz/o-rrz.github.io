@@ -1,13 +1,30 @@
 const base = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+const sym = "!@#$%^&*()_+-=[]{}|;:,.<>?/";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const out = document.getElementById("output");
-  const btn = document.getElementById("generate");
+const lenInput = document.getElementById("len");
+const lenVal = document.getElementById("lenVal");
+const output = document.getElementById("output");
+const strength = document.getElementById("strength");
 
-  btn.onclick = () => {
-    const bytes = crypto.getRandomValues(new Uint8Array(16));
-    let pwd = "";
-    bytes.forEach(b => pwd += base[b % base.length]);
-    out.textContent = pwd;
-  };
-});
+lenInput.oninput = () => {
+  lenVal.textContent = lenInput.value;
+};
+
+document.getElementById("generate").onclick = () => {
+  const len = +lenInput.value;
+  const pool = document.getElementById("useSymbol").checked
+    ? base + sym
+    : base;
+
+  const bytes = crypto.getRandomValues(new Uint8Array(len));
+  let pwd = "";
+  bytes.forEach(b => pwd += pool[b % pool.length]);
+
+  output.textContent = pwd;
+  strength.textContent = `長度 ${len}，字元空間 ${pool.length}`;
+};
+
+document.getElementById("copy").onclick = () => {
+  if (output.textContent)
+    navigator.clipboard.writeText(output.textContent);
+};
