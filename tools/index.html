@@ -1,41 +1,36 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>工具列表 · 莫比空間</title>
-  <link rel="stylesheet" href="../assets/css/framework.css">
-  <style>
-    body { font-family: "Segoe UI", Tahoma, Verdana, sans-serif; background:#f5f5f5; color:#222; margin:0; }
-    header { text-align:center; padding:40px 20px; background:#1971c2; color:#fff; }
-    header h1 { margin:0; font-size:2rem; }
-    main { max-width:1100px; margin:40px auto; padding:0 20px; }
-    .tool-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; }
-    .tool-card { background:#fff; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.1); padding:20px; transition: transform .2s; }
-    .tool-card:hover { transform:translateY(-5px); box-shadow:0 12px 28px rgba(0,0,0,.15); }
-    .tool-card h3 { margin:0 0 10px; font-size:1.2rem; color:#111; }
-    .tool-card p { margin:0 0 15px; color:#555; font-size:0.95rem; }
-    .tool-card a { text-decoration:none; color:#fff; background:#1971c2; padding:8px 12px; border-radius:6px; font-weight:600; }
-    .tool-card a:hover { background:#145a96; }
-  </style>
+<meta charset="UTF-8">
+<title>工具列表 · 莫比空間</title>
+<link rel="stylesheet" href="../assets/css/framework.css">
+<style>
+body{background:#0f172a;color:#e5e7eb;font-family:system-ui}
+.grid{max-width:1100px;margin:60px auto;display:grid;gap:20px;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card{background:#1f2937;padding:20px;border-radius:14px}
+.card a{color:#60a5fa;text-decoration:none;font-weight:600}
+</style>
 </head>
 <body>
 
-<header>
-  <h1>工具列表</h1>
-  <p>所有可用工具</p>
-</header>
+<h1 style="text-align:center">工具列表</h1>
 
-<main>
-  <div class="tool-list">
-    <div class="tool-card">
-      <h3>密碼產生器</h3>
-      <p>Generate high-entropy passwords in your browser.</p>
-      <a href="password/">使用工具 →</a>
-    </div>
-    <!-- 其他工具卡片可以複製這個區塊新增 -->
-  </div>
-</main>
+<div class="grid" id="list"></div>
 
+<script src="../assets/js/data.js"></script>
+<script>
+const list=document.getElementById("list");
+var DATA = window.MOBISPACE_DATA || [];
+    d.className="card";
+    d.innerHTML=`
+      <h3>${t.name.zh}</h3>
+      <p>${t.desc||""}</p>
+      <a href="${t.url}">使用工具 →</a>`;
+    list.appendChild(d);
+  });
+});
+</script>
+<script src="assets/js/data.js"></script>
 </body>
 </html>
