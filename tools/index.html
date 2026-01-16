@@ -23,10 +23,8 @@ h1{text-align:center;margin-top:20px;margin-bottom:40px;}
 
 <h1>工具列表</h1>
 
-<!-- 工具卡片區 -->
 <div class="grid" id="list"></div>
 
-<!-- 所有頁面導航清單 -->
 <div class="page-list">
   <h2>所有頁面導航</h2>
   <ul id="page-links"></ul>
@@ -46,7 +44,7 @@ DATA.forEach(t=>{
     list.appendChild(d);
 });
 
-// 自動從 JSON 生成頁面導航
+// 自動生成頁面導航
 fetch('../assets/data/pages.json')
   .then(res => res.json())
   .then(pages => {
