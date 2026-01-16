@@ -3,7 +3,7 @@
 A collection of **privacy-first, client-side web tools**  
 built with modern Web APIs and hosted on GitHub Pages.
 
-🔗 Live: https://o-rrz.github.io/tools/
+🔗 Live: https://o-rrz.github.io/
 
 ---
 
