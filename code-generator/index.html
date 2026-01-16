@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>Ω-ULTIMATE 隨機代碼生成器（最終版）</title>
+<style>
+body { font-family: monospace; background:#121212; color:#f0f0f0; text-align:center; padding:30px;}
+select,input,button { padding:5px 10px; margin:5px; font-size:14px; }
+#codes { margin-top:20px; font-size:16px; white-space: pre-line; text-align:left; max-width:800px; margin:auto;}
+.real { color:#00ff99; }
+.decoy { color:#ffff66; }
+.panic { color:#ff6666; }
+section { margin-bottom:10px; }
+</style>
+</head>
+<body>
+<h1>Ω-ULTIMATE 隨機代碼生成器（最終版）</h1>
+
+<!-- 郵件 -->
+<section>
+<label>郵件：</label>
+<select id="emailSelect"><option value="random">隨機</option></select>
+<input type="text" id="emailAdd" placeholder="新增郵件代碼">
+<button onclick="addEmail()">新增</button>
+<button onclick="removeEmail()">移除選中</button>
+</section>
+
+<!-- 隱私 -->
+<section>
+<label>隱私：</label>
+<select id="privacySelect"><option value="random">隨機</option></select>
+</section>
+
+<!-- 用途 -->
+<section>
+<label>用途：</label>
+<select id="purposeSelect"><option value="random">隨機</option></select>
+<input type="text" id="purposeAdd" placeholder="新增用途代碼">
+<button onclick="addPurpose()">新增</button>
+<button onclick="removePurpose()">移除選中</button>
+</section>
+
+<!-- 轉發/時間/信任 -->
+<section>
+<label>轉發：</label>
+<select id="forwardSelect"><option value="random">隨機</option></select>
+<label>時間：</label>
+<select id="timeSelect"><option value="random">隨機</option></select>
+<label>信任：</label>
+<select id="trustSelect"><option value="random">隨機</option></select>
+</section>
+
+<!-- 模式 -->
+<section>
+<label>生成模式：</label>
+<select id="modeSelect">
+  <option value="real">真碼</option>
+  <option value="decoy">假碼</option>
+  <option value="panic">災難碼</option>
+  <option value="all">三層全部生成</option>
+</select>
+</section>
+
+<section>
+<label>批量生成數量：</label>
+<input type="number" id="batchNum" value="1" min="1" max="100">
+<button onclick="generateCodes()">生成代碼</button>
+</section>
+
+<div id="codes">生成結果會顯示在這裡</div>
+
+<script>
+// === 基本資料 ===
+let emails = JSON.parse(localStorage.getItem('emails')) || ['@I$', '!T^', '^A', '=M!', '#Z', '@N', '$S^', '!F=', '^V@'];
+let privacyLevels = ['1>', '2-,"', '3_/', '4+.;', "5>:'"];
+let purposes = JSON.parse(localStorage.getItem('purposes')) || ['p{e','w_k','y<)t','s{o','g|','s<h','s(e','d<e','b<t','m{g','t]s','f$]','a|n','t~m','b~u','f(o','e[d','c{r','o[p'];
+let forwards = ['~0>','~1>','~2>','~3>'];
+let trustLevels = ['⟦!⟧','⟦-⟧','⟦~⟧','⟦+⟧','⟦★⟧'];
+let timeSalts = ['‹w›','‹m›','‹q›','‹y›'];
+
+// === 初始化下拉選單 ===
+function populateSelect(id, arr){
+  const sel = document.getElementById(id);
+  let val = sel.value || 'random';
+  sel.innerHTML = '<option value="random">隨機</option>';
+  arr.forEach(v => { let opt = document.createElement('option'); opt.value=v; opt.text=v; sel.appendChild(opt); });
+  sel.value = val;
+}
+
+function initSelects(){
+  populateSelect('emailSelect', emails);
+  populateSelect('privacySelect', privacyLevels);
+  populateSelect('purposeSelect', purposes);
+  populateSelect('forwardSelect', forwards);
+  populateSelect('trustSelect', trustLevels);
+  populateSelect('timeSelect', timeSalts);
+}
+initSelects();
+
+// === 新增 / 移除 郵件/用途 ===
+function saveEmails(){ localStorage.setItem('emails', JSON.stringify(emails)); }
+function savePurposes(){ localStorage.setItem('purposes', JSON.stringify(purposes)); }
+
+function addEmail(){
+  let val=document.getElementById('emailAdd').value.trim();
+  if(val && !emails.includes(val)){ emails.push(val); saveEmails(); populateSelect('emailSelect', emails); }
+  document.getElementById('emailAdd').value='';
+}
+function removeEmail(){
+  let sel = document.getElementById('emailSelect');
+  let val = sel.value;
+  if(val !== 'random'){
+    emails = emails.filter(e=>e!==val);
+    saveEmails(); populateSelect('emailSelect', emails);
+  }
+}
+
+function addPurpose(){
+  let val=document.getElementById('purposeAdd').value.trim();
+  if(val && !purposes.includes(val)){ purposes.push(val); savePurposes(); populateSelect('purposeSelect', purposes); }
+  document.getElementById('purposeAdd').value='';
+}
+function removePurpose(){
+  let sel = document.getElementById('purposeSelect');
+  let val = sel.value;
+  if(val!=='random'){
+    purposes = purposes.filter(p=>p!==val);
+    savePurposes(); populateSelect('purposeSelect', purposes);
+  }
+}
+
+// === 隨機選擇 ===
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+// === 校驗碼 ===
+function generateChecksum(emailCode, purposeCode){
+  let sym = emailCode.match(/[^a-zA-Z0-9]/) || ['#'];
+  let lastChar = purposeCode.slice(-1);
+  return `{${sym[0]}${lastChar}}`;
+}
+
+// === 生成單層代碼 ===
+function generateLayer(layerType){
+  function getVal(selectId, arr){ 
+    let sel=document.getElementById(selectId).value;
+    return sel==='random' ? pick(arr) : sel;
+  }
+
+  let email=getVal('emailSelect', emails);
+  let privacy=getVal('privacySelect', privacyLevels);
+  let purpose=getVal('purposeSelect', purposes);
+  let forward=getVal('forwardSelect', forwards);
+  let salt=getVal('timeSelect', timeSalts);
+  let trust=getVal('trustSelect', trustLevels);
+  let checksum = generateChecksum(email,purpose);
+
+  if(layerType==='decoy'){ privacy=pick(privacyLevels); purpose=pick(purposes); }
+  else if(layerType==='panic'){ forward='~3>'; trust='⟦★⟧'; }
+
+  return email+privacy+purpose+forward+checksum+salt+trust;
+}
+
+// === 生成代碼 ===
+function generateCodes(){
+  const mode=document.getElementById('modeSelect').value;
+  const batchNum=parseInt(document.getElementById('batchNum').value)||1;
+  let output='';
+  for(let i=0;i<batchNum;i++){
+    if(mode==='real') output+='<span class="real">真碼：'+generateLayer('real')+'</span>\n\n';
+    else if(mode==='decoy') output+='<span class="decoy">假碼：'+generateLayer('decoy')+'</span>\n\n';
+    else if(mode==='panic') output+='<span class="panic">災難碼：'+generateLayer('panic')+'</span>\n\n';
+    else if(mode==='all'){
+      output+='<span class="real">真碼：'+generateLayer('real')+'</span>\n';
+      output+='<span class="decoy">假碼：'+generateLayer('decoy')+'</span>\n';
+      output+='<span class="panic">災難碼：'+generateLayer('panic')+'</span>\n\n';
+    }
+  }
+  document.getElementById('codes').innerHTML=output;
+}
+</script>
+</body>
+</html>
