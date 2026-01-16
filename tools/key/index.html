@@ -1,80 +1,72 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>Ω-ULTIMATE 解碼表</title>
+<title>解碼表 · 莫比空間</title>
+<link rel="stylesheet" href="assets/css/framework.css">
 <style>
-body { font-family: monospace; background:#121212; color:#f0f0f0; text-align:center; padding:30px;}
-table { border-collapse: collapse; margin:auto; margin-bottom:20px; }
-th,td { border:1px solid #fff; padding:5px 10px; }
-.real { color:#00ff99; }
-.decoy { color:#ffff66; }
-.panic { color:#ff6666; }
-nav a { color:#00ccff; margin:0 10px; text-decoration:none; }
+body{background:#1a1a2e;color:#fff;font-family:system-ui;margin:0;padding:20px;}
+h1{text-align:center;margin-top:20px;margin-bottom:40px;color:#60a5fa;}
+.table{max-width:900px;margin:0 auto 40px auto;border-collapse:collapse;width:100%;}
+.table th, .table td{border:1px solid #444;padding:10px;text-align:center;}
+.table th{background:#162447;color:#fff;}
+.table td{background:#1f4068;}
+.page-list{max-width:900px;margin:0 auto 40px auto;background:#162447;padding:20px;border-radius:14px;}
+.page-list h2{color:#60a5fa;margin-bottom:15px;}
+.page-list ul{list-style:none;padding:0;margin:0;}
+.page-list ul li{margin-bottom:10px;}
+.page-list ul li a{color:#e5e7eb;text-decoration:none;padding:6px 12px;background:#1f4068;border-radius:6px;display:inline-block;transition:background .2s;}
+.page-list ul li a:hover{background:#60a5fa;color:#0f172a;}
 </style>
 </head>
 <body>
-<h1>Ω-ULTIMATE 解碼表</h1>
-<nav>
-<a href="guide.html">← 返回操作指南</a>
-</nav>
 
-<h2>郵件代碼表</h2>
-<table>
-<tr><th>郵件名稱</th><th>代碼</th></tr>
-<tr><td>iCloud</td><td>@I$</td></tr>
-<tr><td>Tutanota</td><td>!T^</td></tr>
-<tr><td>AOL</td><td>^A</td></tr>
-<tr><td>Impromx</td><td>=M!</td></tr>
-<tr><td>Zoho</td><td>#Z</td></tr>
-<tr><td>Naver</td><td>@N</td></tr>
-<tr><td>Seznam</td><td>$S^</td></tr>
-<tr><td>Firefox Relay</td><td>!F=</td></tr>
-<tr><td>Vivaldi</td><td>^V@</td></tr>
+<h1>解碼表</h1>
+
+<table class="table">
+<thead>
+<tr>
+<th>郵件代碼</th>
+<th>隱私等級</th>
+<th>用途碼</th>
+<th>轉發狀態</th>
+<th>總代碼</th>
+</tr>
+</thead>
+<tbody id="code-table"></tbody>
 </table>
 
-<h2>隱私等級表</h2>
-<table>
-<tr><th>等級</th><th>代碼</th></tr>
-<tr><td>1</td><td>1></td></tr>
-<tr><td>2</td><td>2-,"</td></tr>
-<tr><td>3</td><td>3_/</td></tr>
-<tr><td>4</td><td>4+.;</td></tr>
-<tr><td>5</td><td>5>:'</td></tr>
-</table>
+<div class="page-list">
+  <h2>所有頁面導航</h2>
+  <ul id="page-links"></ul>
+</div>
 
-<h2>用途代碼表</h2>
-<table>
-<tr><th>用途</th><th>代碼</th></tr>
-<tr><td>遊戲</td><td>g|</td></tr>
-<tr><td>品牌</td><td>y<)t</td></tr>
-<tr><td>個人</td><td>p{e</td></tr>
-<tr><td>開放</td><td>w_k</td></tr>
-<tr><td>社交</td><td>s{o</td></tr>
-<tr><td>開發者</td><td>d<e</td></tr>
-<tr><td>購物</td><td>b<t</td></tr>
-<tr><td>其它</td><td>o[p</td></tr>
-</table>
+<script src="assets/js/data.js"></script>
+<script>
+var CODES = window.CODE_DATA || [];
+const tbody = document.getElementById("code-table");
+CODES.forEach(item => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${item.email}</td><td>${item.privacy}</td><td>${item.purpose}</td><td>${item.forward}</td><td>${item.total}</td>`;
+  tbody.appendChild(tr);
+});
 
-<h2>轉發狀態表</h2>
-<table>
-<tr><th>次數</th><th>代碼</th></tr>
-<tr><td>無轉發</td><td>~0&gt;</td></tr>
-<tr><td>轉發1次</td><td>~1&gt;</td></tr>
-<tr><td>轉發2次</td><td>~2&gt;</td></tr>
-<tr><td>轉發3次</td><td>~3&gt;</td></tr>
-</table>
-
-<h2>顏色對應三層碼</h2>
-<ul style="text-align:left; max-width:700px; margin:auto;">
-<li><span class="real">真碼 → 綠色</span></li>
-<li><span class="decoy">假碼 → 黃色</span></li>
-<li><span class="panic">災難碼 → 紅色</span></li>
-</ul>
-
-<h2>範例組合</h2>
-<p>例如：使用AOL郵件生成品牌用途真碼：<br>
-<span class="real">^A3_/y<)t~0>{^t}‹w›⟦!⟧</span></p>
+// 自動生成頁面導航
+fetch('assets/data/pages.json')
+  .then(res => res.json())
+  .then(pages => {
+    const pageListEl = document.getElementById("page-links");
+    pages.forEach(p => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = p.url;
+      a.textContent = p.name;
+      li.appendChild(a);
+      pageListEl.appendChild(li);
+    });
+  })
+  .catch(err => console.error('載入頁面清單失敗:', err));
+</script>
 
 </body>
 </html>
