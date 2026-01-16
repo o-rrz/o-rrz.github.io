@@ -2,6 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>莫比空間 總覽</title>
 <link rel="stylesheet" href="assets/css/framework.css">
 <style>
@@ -10,12 +11,10 @@ header { text-align:center; padding:60px 20px; background:#1971c2; color:#fff; }
 header h1 { margin:0; font-size:2.5rem; }
 header p { margin:10px 0 0; font-size:1.2rem; opacity:0.9; }
 main { max-width:900px; margin:40px auto; padding:0 20px; }
-.page-list { background:#fff; border-radius:12px; padding:30px; box-shadow:0 6px 20px rgba(0,0,0,0.1); }
-.page-list h2 { color:#1971c2; margin-bottom:15px; }
-.page-list ul { list-style:none; padding:0; }
-.page-list ul li { margin-bottom:10px; }
-.page-list ul li a { text-decoration:none; color:#1971c2; font-weight:600; }
-.page-list ul li a:hover { text-decoration:underline; }
+.card { background:#fff; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.1); padding:30px; text-align:center; margin-bottom:20px; transition: transform .2s; }
+.card:hover { transform: translateY(-5px); box-shadow:0 12px 28px rgba(0,0,0,.15); }
+.card a { text-decoration:none; color:#fff; background:#1971c2; padding:10px 18px; border-radius:8px; font-weight:600; display:inline-block; margin-top:15px; }
+.card a:hover { background:#145a96; }
 </style>
 </head>
 <body>
@@ -25,28 +24,22 @@ main { max-width:900px; margin:40px auto; padding:0 20px; }
   <p>Privacy-first, client-side web tools</p>
 </header>
 
-<main>
-  <div class="page-list">
-    <h2>快速導航</h2>
-    <ul id="page-links"></ul>
-  </div>
-</main>
+<main id="overview"></main>
 
 <script>
-fetch('assets/data/pages.json')
-  .then(res => res.json())
-  .then(pages => {
-      const ul = document.getElementById("page-links");
-      pages.forEach(p=>{
-          const li = document.createElement("li");
-          const a = document.createElement("a");
-          a.href = p.url;
-          a.textContent = p.name;
-          li.appendChild(a);
-          ul.appendChild(li);
-      });
-  })
-  .catch(err => console.error("載入頁面清單失敗", err));
+const PAGES = [
+  { name: "工具列表", url: "tools/index.html" },
+  { name: "操作指南 + 生成器", url: "guide.html" },
+  { name: "解碼表", url: "key.html" }
+];
+
+const overviewEl = document.getElementById("overview");
+PAGES.forEach(p=>{
+  const div = document.createElement("div");
+  div.className = "card";
+  div.innerHTML = `<h2>${p.name}</h2><a href="${p.url}">進入頁面 →</a>`;
+  overviewEl.appendChild(div);
+});
 </script>
 
 </body>
