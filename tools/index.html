@@ -32,30 +32,27 @@ h1{text-align:center;margin-top:20px;margin-bottom:40px;}
 
 <script src="../assets/js/data.js"></script>
 <script>
-const list=document.getElementById("list");
+const list = document.getElementById("list");
 var DATA = window.MOBISPACE_DATA || [];
-DATA.forEach(t=>{
-    const d=document.createElement("div");
-    d.className="card";
-    d.innerHTML=`
-      <h3>${t.name.zh}</h3>
-      <p>${t.desc||""}</p>
-      <a href="${t.url}">使用工具 →</a>`;
-    list.appendChild(d);
+DATA.forEach(t => {
+  const d = document.createElement("div");
+  d.className = "card";
+  d.innerHTML = `<h3>${t.name.zh}</h3><p>${t.desc || ""}</p><a href="${t.url}">使用工具 →</a>`;
+  list.appendChild(d);
 });
 
-// 自動生成頁面導航
+// JSON 自動生成導航
 fetch('../assets/data/pages.json')
   .then(res => res.json())
   .then(pages => {
     const pageListEl = document.getElementById("page-links");
-    pages.forEach(p=>{
-        const li=document.createElement("li");
-        const a=document.createElement("a");
-        a.href = p.url;
-        a.textContent = p.name;
-        li.appendChild(a);
-        pageListEl.appendChild(li);
+    pages.forEach(p => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = p.url;
+      a.textContent = p.name;
+      li.appendChild(a);
+      pageListEl.appendChild(li);
     });
   })
   .catch(err => console.error('載入頁面清單失敗:', err));
