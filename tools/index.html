@@ -5,32 +5,63 @@
 <title>工具列表 · 莫比空間</title>
 <link rel="stylesheet" href="../assets/css/framework.css">
 <style>
-body{background:#0f172a;color:#e5e7eb;font-family:system-ui}
-.grid{max-width:1100px;margin:60px auto;display:grid;gap:20px;
-grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-.card{background:#1f2937;padding:20px;border-radius:14px}
-.card a{color:#60a5fa;text-decoration:none;font-weight:600}
+body{background:#0f172a;color:#e5e7eb;font-family:system-ui;margin:0;padding:20px;}
+h1{text-align:center;margin-top:20px;margin-bottom:40px;}
+.grid{max-width:1100px;margin:0 auto 40px auto;display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
+.card{background:#1f2937;padding:20px;border-radius:14px;transition:transform .2s;}
+.card:hover{transform:translateY(-4px);}
+.card a{color:#60a5fa;text-decoration:none;font-weight:600;}
+.page-list{max-width:900px;margin:0 auto 40px auto;background:#1f2937;padding:20px;border-radius:14px;}
+.page-list h2{color:#60a5fa;margin-bottom:15px;}
+.page-list ul{list-style:none;padding:0;margin:0;}
+.page-list ul li{margin-bottom:10px;}
+.page-list ul li a{color:#e5e7eb;text-decoration:none;padding:6px 12px;background:#374151;border-radius:6px;display:inline-block;transition:background .2s;}
+.page-list ul li a:hover{background:#60a5fa;color:#0f172a;}
 </style>
 </head>
 <body>
 
-<h1 style="text-align:center">工具列表</h1>
+<h1>工具列表</h1>
 
+<!-- 工具卡片區 -->
 <div class="grid" id="list"></div>
+
+<!-- 所有頁面導航清單 -->
+<div class="page-list">
+  <h2>所有頁面導航</h2>
+  <ul id="page-links"></ul>
+</div>
 
 <script src="../assets/js/data.js"></script>
 <script>
 const list=document.getElementById("list");
 var DATA = window.MOBISPACE_DATA || [];
+DATA.forEach(t=>{
+    const d=document.createElement("div");
     d.className="card";
     d.innerHTML=`
       <h3>${t.name.zh}</h3>
       <p>${t.desc||""}</p>
       <a href="${t.url}">使用工具 →</a>`;
     list.appendChild(d);
-  });
 });
+
+// 自動從 JSON 生成頁面導航
+fetch('../assets/data/pages.json')
+  .then(res => res.json())
+  .then(pages => {
+    const pageListEl = document.getElementById("page-links");
+    pages.forEach(p=>{
+        const li=document.createElement("li");
+        const a=document.createElement("a");
+        a.href = p.url;
+        a.textContent = p.name;
+        li.appendChild(a);
+        pageListEl.appendChild(li);
+    });
+  })
+  .catch(err => console.error('載入頁面清單失敗:', err));
 </script>
-<script src="assets/js/data.js"></script>
+
 </body>
 </html>
