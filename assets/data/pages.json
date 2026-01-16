@@ -1,0 +1,6 @@
+[
+  { "name": "🏠 總覽頁", "url": "index.html" },
+  { "name": "🛠 操作指南 + 生成器", "url": "guide.html" },
+  { "name": "🔑 解碼表頁", "url": "key.html" },
+  { "name": "🧰 工具列表主頁", "url": "tools/index.html" }
+]
